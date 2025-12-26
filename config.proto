@@ -142,6 +142,9 @@ message SolveResponse {
   // Next immediate action to execute (first in list)
   BuildingAction next_action = 3;
   
+  // Next research action (if research is needed before next building)
+  ResearchAction next_research_action = 6;
+  
   // Total time to complete all targets (seconds)
   int32 total_time_seconds = 4;
   
