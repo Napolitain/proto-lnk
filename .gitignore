@@ -1,0 +1,4 @@
+# Generated files - each consumer generates their own
+*.pb.go
+*.ts
+
