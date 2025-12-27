@@ -133,6 +133,29 @@ message ResearchAction {
   repeated Resource costs = 4;
 }
 
+// Recommended army composition when build order is complete
+message UnitsRecommendation {
+  // Recommended unit counts
+  repeated UnitCount unit_counts = 1;
+  
+  // Total food used by this composition
+  int32 total_food = 2;
+  
+  // Trading throughput (resources per hour)
+  double total_throughput = 3;
+  
+  // Defense stats
+  int32 defense_vs_cavalry = 4;
+  int32 defense_vs_infantry = 5;
+  int32 defense_vs_artillery = 6;
+  
+  // Silver income per hour
+  double silver_per_hour = 7;
+  
+  // Whether build order is complete (all targets reached)
+  bool build_order_complete = 8;
+}
+
 // Response from solver
 message SolveResponse {
   // Full build order
@@ -150,6 +173,9 @@ message SolveResponse {
   
   // Strategy used
   string strategy = 5;
+  
+  // Units recommendation (populated when build order is complete)
+  UnitsRecommendation units_recommendation = 7;
 }
 
 // Castle Solver Service
