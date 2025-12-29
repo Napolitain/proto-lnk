@@ -33,6 +33,18 @@ enum Technology {
   CROSSBOW = 6;
   SWORDSMITH = 7;
   HORSE_ARMOUR = 8;
+  BEER_TESTER = 9;
+  WHEELBARROW = 10;
+  WEAPONSMITH = 11;
+  ARMOURSMITH = 12;
+  IRON_HARDENING = 13;
+  POISON_ARROWS = 14;
+  HORSE_BREEDING = 15;
+  FLAMING_ARROWS = 16;
+  BLACKSMITH = 17;
+  MAP_OF_AREA = 18;
+  CISTERN = 19;
+  FORTRESS_CONSTRUCTION = 20;
 }
 
 // Unit types enum
@@ -131,6 +143,36 @@ message ResearchAction {
   int32 start_time_seconds = 2;
   int32 end_time_seconds = 3;
   repeated Resource costs = 4;
+  string technology_name = 5;  // Human-readable name for techs not in enum
+}
+
+// Action type enum for unified timeline
+enum ActionType {
+  ACTION_UNKNOWN = 0;
+  ACTION_BUILDING = 1;
+  ACTION_RESEARCH = 2;
+  ACTION_UNIT_TRAINING = 3;
+}
+
+// Unit training action (for future use)
+message UnitTrainingAction {
+  UnitType unit_type = 1;
+  int32 count = 2;
+  int32 start_time_seconds = 3;
+  int32 end_time_seconds = 4;
+  repeated Resource costs = 5;
+}
+
+// Unified action that can be building, research, or unit training
+message Action {
+  ActionType type = 1;
+  int32 start_time_seconds = 2;
+  int32 end_time_seconds = 3;
+  
+  // One of these will be set based on type
+  BuildingAction building = 4;
+  ResearchAction research = 5;
+  UnitTrainingAction unit_training = 6;
 }
 
 // Recommended army composition when build order is complete
@@ -158,14 +200,20 @@ message UnitsRecommendation {
 
 // Response from solver
 message SolveResponse {
-  // Full build order
+  // Full build order (legacy - use timeline for new integrations)
   repeated BuildingAction building_actions = 1;
   repeated ResearchAction research_actions = 2;
   
-  // Next immediate action to execute (first in list)
+  // Unified timeline - all actions in chronological order
+  repeated Action timeline = 8;
+  
+  // Next immediate action to execute (unified - replaces next_action and next_research_action)
+  Action next_immediate_action = 9;
+  
+  // Legacy: Next building action (deprecated, use next_immediate_action)
   BuildingAction next_action = 3;
   
-  // Next research action (if research is needed before next building)
+  // Legacy: Next research action (deprecated, use next_immediate_action)
   ResearchAction next_research_action = 6;
   
   // Total time to complete all targets (seconds)
